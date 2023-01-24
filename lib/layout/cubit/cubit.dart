@@ -46,7 +46,7 @@ class AppCubit extends Cubit<AppStates>{
    List<Widget> screens=const [
      FeedsScreen(),
      ChatsScreen(),
-     NewPostScreen(),
+     FeedsScreen(),
      UsersScreen(),
      SettingsScreen(),
 
@@ -67,17 +67,12 @@ class AppCubit extends Cubit<AppStates>{
    void changeBottomNav(int index){
      if(index==1) {
        getUsersChats();
-       print('data');
-
      }
-
      if(index==2) {
        emit(AppNewPostState());
      }
-
        currentIndex=index;
        emit(AppBottomNavState());
-
 
    }
 

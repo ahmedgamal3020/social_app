@@ -87,8 +87,9 @@ class FeedsScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 20.0,
-              foregroundImage:NetworkImage('${model.image}' ,
-              )
+              foregroundImage:NetworkImage('${model.image}',
+              ),
+
             ),
             const SizedBox(
               width: 10,

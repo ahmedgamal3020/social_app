@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/core/conponents/constant.dart';
+import 'package:social_app/layout/cubit/cubit.dart';
 import 'package:social_app/layout/home_screen.dart';
 import 'package:social_app/modules/login_screen/login_screen.dart';
 import 'package:social_app/network/local/cache_helper.dart';
@@ -34,10 +36,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: defaultTheme,
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context)=>AppCubit()..getPosts()..getUserData())
+        ], child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: defaultTheme,
     home:startWidget,
+    )
     );
 
   }
