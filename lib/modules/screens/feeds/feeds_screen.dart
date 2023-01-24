@@ -1,25 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:social_app/core/conponents/conponents.dart';
 import 'package:social_app/layout/cubit/cubit.dart';
 import 'package:social_app/layout/cubit/states.dart';
 import 'package:social_app/models/post_model.dart';
 import 'package:social_app/style/colors.dart';
 
 class FeedsScreen extends StatelessWidget {
-    FeedsScreen({Key? key}) : super(key: key);
-    final Stream<QuerySnapshot> posts = FirebaseFirestore.instance.collection('posts').snapshots();
+   const FeedsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit,AppStates>(
-            listener: (context,state){},
+    return BlocBuilder<AppCubit,AppStates>(
             builder: (context,state){
               var cubit= AppCubit.get(context);
-              return StreamBuilder(
-                stream: posts,
-                  builder:(context,snapshot) =>ConditionalBuilder(
+              return ConditionalBuilder(
                     condition: cubit.posts.isNotEmpty && cubit.userModel!=null ,
                     builder: (context)=>SingleChildScrollView(
                       physics:const BouncingScrollPhysics(),
@@ -71,12 +69,10 @@ class FeedsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    fallback: (context)=>const Center(child: CircularProgressIndicator(),
-                    )
-                ),
-              );
-            },
+                    fallback: (context)=>loadingPost()
+                    );
 
+            },
           );
       }
   }
@@ -184,18 +180,25 @@ class FeedsScreen extends StatelessWidget {
           ),
         ),
         //Post Image
-        if(model.postImage!=null)
-        Container(
+         if(model.postImage!=null)
+        CachedNetworkImage(
+          imageUrl: model.postImage!,
+          fit: BoxFit.cover,
           height: 200,
           width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            image:DecorationImage(
-                image: NetworkImage('${model.postImage}',
-                ),
-                fit: BoxFit.cover
-            ),
+          placeholder: (context, url) => Shimmer.fromColors(
+            baseColor:Colors.grey,
+            highlightColor: Colors.white,
+            child:Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ) ,
           ),
+          errorWidget:(context, url, error) => const Icon(Icons.error),
         ),
         const SizedBox(
           height: 5,
@@ -243,7 +246,7 @@ class FeedsScreen extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: (){
-                    AppCubit.get(context).setPostComment(AppCubit.get(context).postId[index]);
+                    AppCubit.get(context).addComment(postId: AppCubit.get(context).postId[index]);
                   },
                   child: Row(
                     children: [
@@ -275,7 +278,7 @@ class FeedsScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: (){
-                  AppCubit.get(context).setPostLike( AppCubit.get(context).postId[index]);
+                  AppCubit.get(context).addLike( postId: AppCubit.get(context).postId[index]);
                 },
                 child: Row(
                   children: [

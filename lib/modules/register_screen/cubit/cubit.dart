@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/conponents/constant.dart';
 import 'package:social_app/models/social_user_model.dart';
 import 'package:social_app/modules/register_screen/cubit/states.dart';
 

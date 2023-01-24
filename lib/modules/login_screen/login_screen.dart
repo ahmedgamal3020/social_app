@@ -2,8 +2,8 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/conponents/conponents.dart';
-import 'package:social_app/conponents/constant.dart';
+import 'package:social_app/core/conponents/conponents.dart';
+import 'package:social_app/core/conponents/constant.dart';
 import 'package:social_app/layout/home_screen.dart';
 import 'package:social_app/modules/login_screen/cubit/cubit.dart';
 import 'package:social_app/modules/login_screen/cubit/states.dart';
@@ -11,13 +11,20 @@ import 'package:social_app/modules/register_screen/register_screen.dart';
 import 'package:social_app/network/local/cache_helper.dart';
 
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController =TextEditingController();
+
   TextEditingController passwordController =TextEditingController();
+
   var formKey =GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context)
   {

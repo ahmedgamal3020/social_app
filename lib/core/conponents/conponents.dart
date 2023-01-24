@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart';
 
 Widget myDivider()=>Container(
   width: double.infinity,
@@ -159,3 +160,51 @@ Color chooseColor(ToastState state)
   }
   return color;
 }
+
+Widget loadingPost()=>Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Shimmer.fromColors(
+    period: const Duration(milliseconds: 500),
+    baseColor: Colors.grey[300]!,
+    highlightColor: Colors.white,
+    child:Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+        ),
+        Row(
+          children:   [
+            const CircleAvatar(
+              radius: 20,
+            ),
+            Container(
+              height: 15,
+              width: 100,
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(8)
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 10,),
+        Container(
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      ],
+    ) ,
+  ),
+);

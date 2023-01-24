@@ -1,5 +1,4 @@
 
-import 'package:social_app/conponents/constant.dart';
 
 class AppUserModel{
   String? name;

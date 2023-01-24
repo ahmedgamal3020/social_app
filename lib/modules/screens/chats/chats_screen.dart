@@ -1,21 +1,18 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/conponents/conponents.dart';
+import 'package:social_app/core/conponents/conponents.dart';
 import 'package:social_app/layout/cubit/cubit.dart';
 import 'package:social_app/layout/cubit/states.dart';
 import 'package:social_app/models/social_user_model.dart';
-import 'package:social_app/modules/chat_details/chat_details.dart';
+import 'package:social_app/modules/screens/chat_details/chat_details.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit, AppStates>(
-  listener: (context, state) {
-    // TODO: implement listener
-  },
+    return BlocBuilder<AppCubit, AppStates>(
   builder: (context, state) {
     return ConditionalBuilder(
       condition: AppCubit.get(context).users.isNotEmpty,

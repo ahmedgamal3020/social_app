@@ -4,16 +4,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:social_app/conponents/constant.dart';
+import 'package:social_app/core/conponents/constant.dart';
 import 'package:social_app/layout/cubit/states.dart';
 import 'package:social_app/models/message_model.dart';
 import 'package:social_app/models/post_model.dart';
 import 'package:social_app/models/social_user_model.dart';
-import 'package:social_app/modules/chats/chats_screen.dart';
-import 'package:social_app/modules/feeds/feeds_screen.dart';
 import 'package:social_app/modules/new_post/new_post.dart';
-import 'package:social_app/modules/settings/settings_screen.dart';
-import 'package:social_app/modules/users/users_screen.dart';
+import 'package:social_app/modules/screens/chats/chats_screen.dart';
+import 'package:social_app/modules/screens/feeds/feeds_screen.dart';
+import 'package:social_app/modules/screens/settings/settings_screen.dart';
+import 'package:social_app/modules/screens/users/users_screen.dart';
 
 class AppCubit extends Cubit<AppStates>{
   AppCubit():super(AppInitialState());
@@ -22,28 +22,28 @@ class AppCubit extends Cubit<AppStates>{
 
   //get all user data from data base to home screen
    AppUserModel? userModel;
-   getUserData(){
+   Future getUserData() async {
     emit(AppGetUserLoadingState());
-
-    FirebaseFirestore.instance
+    final result =await FirebaseFirestore.instance
         .collection('users')
         .doc(uIds)
-        .get()
-        .then((value) {
-          userModel=AppUserModel.fromJson(value.data()!);
-          nameControllers?.text=userModel!.name!;
-          bioControllers?.text=userModel!.bio!;
-          phoneControllers?.text=userModel!.phone!;
-          emit(AppGetUserSuccessState());
-    }).catchError((error){
+        .get();
+    try {
+      userModel = AppUserModel.fromJson(result.data()!);
+      nameControllers?.text = userModel!.name!;
+      bioControllers?.text = userModel!.bio!;
+      phoneControllers?.text = userModel!.phone!;
+      emit(AppGetUserSuccessState());
+    }catch(error){
       emit(AppGetUserErrorState(error));
-    });
+    }
+
   }
 
 
   //toggle between the screens
    int currentIndex=0;
-   List<Widget> screens=   [
+   List<Widget> screens=const [
      FeedsScreen(),
      ChatsScreen(),
      NewPostScreen(),
@@ -66,7 +66,7 @@ class AppCubit extends Cubit<AppStates>{
   //change the bottom nav bar
    void changeBottomNav(int index){
      if(index==1) {
-       getUsers();
+       getUsersChats();
        print('data');
 
      }
@@ -256,6 +256,7 @@ Reference get firebaseStorage =>FirebaseStorage.instance.ref();
       emit(AppCreatePostErrorState());
       print('Error 2  = $error');
     });
+    return null;
 
   }
 
@@ -285,6 +286,7 @@ Reference get firebaseStorage =>FirebaseStorage.instance.ref();
       print("Error= $error");
       emit(AppCreatePostErrorState());
     });
+    return null;
   }
 
   // get post from dataBase {name, title, dateTime, comments,likes}
@@ -292,7 +294,7 @@ Reference get firebaseStorage =>FirebaseStorage.instance.ref();
   late List<String>postId=[];
   late List<int>comments=[];
   late List<int>likes=[];
-  Stream<Object?>? getPosts(){
+  Stream<Object>? getPosts(){
     emit(AppGetPostsLoadingState());
     FirebaseFirestore
         .instance
@@ -307,8 +309,9 @@ Reference get firebaseStorage =>FirebaseStorage.instance.ref();
           likes.add(value.docs.length);
           postId.add(i.id);
           posts.add(PostModel.fromJson(i.data()));
+          print(posts[0].postImage);
         }).catchError((error){
-          print('Error 2 = ${error.toString()}');
+          print('Error 2 on get post = ${error.toString()}');
           emit(AppGetPostsErrorState(error));
 
         });
@@ -320,13 +323,13 @@ Reference get firebaseStorage =>FirebaseStorage.instance.ref();
 
           emit(AppGetPostsSuccessState());
     });
+    return null;
 
    }
 
-
+//Show who you are chatting with them
 List<AppUserModel> users=[];
-    getUsers(){
-
+    getUsersChats(){
      if(users.isEmpty) {
        FirebaseFirestore.instance.collection('users').get().then((value){
        for(var i in value.docs){
@@ -335,7 +338,7 @@ List<AppUserModel> users=[];
           }
 
        }
-       print('getUsrts');
+       print('get Users');
        emit(AppGetAllUsersSuccessState());
      }).catchError((error){
        print('Error = ${error.toString()}');
@@ -344,9 +347,10 @@ List<AppUserModel> users=[];
      }
    }
 
-
-  void  setPostLike(
-      @required String postId){
+// add like at the post
+  void addLike({
+      required String postId
+  }){
     FirebaseFirestore
         .instance
         .collection('posts')
@@ -355,18 +359,12 @@ List<AppUserModel> users=[];
         .doc(userModel!.uId)
         .set({
       'like':true
-    }).then((value){
-
-    }
-      ).catchError((error){
-      emit(AppSetLikePostErrorState(error));
-
     });
   }
 
-  void setPostComment(
-      @required String postId
-      ){
+  void addComment({
+    required String postId
+  }){
     FirebaseFirestore
         .instance
         .collection('posts')
@@ -387,28 +385,32 @@ List<AppUserModel> users=[];
 
   }
 
-  void sendMessage({
+  Future<void> sendMessage( {
   required String receiverId,
   required String dateTime,
   required String text,
-}){
+})async{
       MessageModel model = MessageModel(
         text: text,
         dateTime: dateTime,
         receiverId: receiverId,
         senderId: userModel!.uId
       );
-      FirebaseFirestore.instance
+      try{
+     await FirebaseFirestore.instance
       .collection('users')
       .doc(userModel!.uId)
       .collection('chats')
       .doc(receiverId)
       .collection('messages')
-      .add(model.toMap()).then((value){
-        emit(AppSendMessageSuccessState());
-      }).catchError((error){
-        emit(AppSendMessageErrorState());
-      });
+      .add(model.toMap());
+    emit(AppSendMessageSuccessState());
+
+     }catch(error){
+       emit(AppSendMessageErrorState());
+
+     }
+
       FirebaseFirestore.instance
           .collection('users')
           .doc(receiverId)
@@ -422,10 +424,10 @@ List<AppUserModel> users=[];
       });
   }
   List<MessageModel>messages=[];
-   getMessages({
-    @required String? receiverId,
+  Future<void> getMessages({
+     String? receiverId,
 
-  }){
+  })async{
      FirebaseFirestore.instance
          .collection('users')
          .doc(uIds)
@@ -436,9 +438,9 @@ List<AppUserModel> users=[];
          .snapshots()
          .listen((event) {
        messages = [];
-       event.docs.forEach((element) {
+       for (var element in event.docs) {
              messages.add(MessageModel.fromJson(element.data()));
-           });
+           }
        emit(AppGetMessageSuccessState());
      });
 

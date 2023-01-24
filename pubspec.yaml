@@ -39,17 +39,20 @@ dependencies:
   bloc: ^8.1.0
   flutter_bloc: ^8.1.1
   conditional_builder_null_safety: ^0.0.6
-  firebase_core: ^2.4.0
-  firebase_auth: ^4.2.0
+  firebase_core: ^2.4.1
+  firebase_auth: ^4.2.5
   fluttertoast: ^8.1.2
-  cloud_firestore: ^4.2.0
-  shared_preferences: ^2.0.15
+  cloud_firestore: ^4.3.1
+  shared_preferences: ^2.0.17
   flutter_iconly: ^1.0.2
   font_awesome_flutter: ^10.3.0
-  image_picker: ^0.8.6
+  image_picker: ^0.8.6+1
   image_cropper: ^3.0.1
-  firebase_storage: ^11.0.7
-  firebase_messaging: ^14.1.4
+  firebase_storage: ^11.0.10
+  firebase_messaging: ^14.2.1
+  shimmer: ^2.0.0
+  cached_network_image: ^3.2.3
+
 
 dev_dependencies:
   flutter_test:

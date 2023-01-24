@@ -2,8 +2,8 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/conponents/conponents.dart';
-import 'package:social_app/conponents/constant.dart';
+import 'package:social_app/core/conponents/conponents.dart';
+import 'package:social_app/core/conponents/constant.dart';
 import 'package:social_app/layout/cubit/cubit.dart';
 import 'package:social_app/layout/cubit/states.dart';
 import 'package:social_app/layout/home_screen.dart';

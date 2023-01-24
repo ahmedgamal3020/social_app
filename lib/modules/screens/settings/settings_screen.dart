@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/conponents/conponents.dart';
+import 'package:social_app/core/conponents/conponents.dart';
 import 'package:social_app/layout/cubit/cubit.dart';
 import 'package:social_app/layout/cubit/states.dart';
-import 'package:social_app/modules/edit_profile/edit_profile_screen.dart';
+import 'package:social_app/modules/screens/edit_profile/edit_profile_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
